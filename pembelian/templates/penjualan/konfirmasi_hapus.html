@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Konfirmasi Hapus</title>
+</head>
+<body>
+    <h2>Konfirmasi Penghapusan</h2>
+    <p>Apakah kamu yakin ingin menghapus: <strong>{{ obj }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Ya, Hapus</button>
+        <a href="javascript:history.back()">Batal</a>
+    </form>
+</body>
+</html>

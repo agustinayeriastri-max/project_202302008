@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Pembelian{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <h2 class="mb-3">Form Pembelian</h2>
+
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label>Supplier:</label>
+        {{ form.supplier }}
+      </div>
+      <div class="col-md-3">
+        <label>Barang:</label>
+        {{ form.barang }}
+      </div>
+      <div class="col-md-2">
+        <label>Jumlah:</label>
+        {{ form.jumlah }}
+      </div>
+      <div class="col-md-2">
+        <label>Harga Beli:</label>
+        {{ form.harga_beli }}
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Simpan</button>
+      </div>
+    </div>
+  </form>
+
+  <hr>
+
+  <h4>Filter Tanggal</h4>
+  <form method="get" class="row gy-2 gx-3 align-items-center mb-3">
+    <div class="col-auto">
+      <label for="tanggal_mulai">Dari:</label>
+      <input type="date" name="tanggal_mulai" class="form-control" value="{{ tanggal_mulai }}">
+    </div>
+    <div class="col-auto">
+      <label for="tanggal_selesai">Sampai:</label>
+      <input type="date" name="tanggal_selesai" class="form-control" value="{{ tanggal_selesai }}">
+    </div>
+    <div class="col-auto">
+      <label class="d-block">&nbsp;</label>
+      <button type="submit" class="btn btn-secondary">Filter</button>
+    </div>
+  </form>
+
+  <h4>Riwayat Pembelian</h4>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Tanggal</th>
+        <th>Supplier</th>
+        <th>Barang</th>
+        <th>Jumlah</th>
+        <th>Harga Beli</th>
+        <th>Total Harga</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in pembelian_list %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.tanggal|date:"d-m-Y H:i" }}</td>
+        <td>{{ p.supplier }}</td>
+        <td>{{ p.barang }}</td>
+        <td>{{ p.jumlah }}</td>
+        <td>Rp {{ p.harga_beli|floatformat:0|intcomma }}</td>
+        <td><strong>Rp {{ p.total_harga|floatformat:0|intcomma }}</strong></td>
+        <td><span class="text-muted">—</span></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="text-center">Tidak ada data pembelian.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const barangSelect = document.getElementById('id_barang');
+    const hargaInput = document.getElementById('id_harga_beli');
+
+    if (barangSelect && hargaInput) {
+      barangSelect.addEventListener('change', function () {
+        const barangId = this.value;
+        if (barangId) {
+          fetch("{% url 'get_harga_barang' %}?barang_id=" + barangId)
+            .then(response => response.json())
+            .then(data => {
+              hargaInput.value = data.harga;
+            });
+        } else {
+          hargaInput.value = '';
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

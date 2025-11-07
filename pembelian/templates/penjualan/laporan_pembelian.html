@@ -1,0 +1,55 @@
+{% extends 'penjualan/base.html' %}
+{% load humanize %}
+{% load custom_filters %} {# Wajib agar filter 'mul' bisa digunakan #}
+
+{% block title %}Laporan Pembelian{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">
+    📊 Laporan Pembelian
+</h2>
+
+<table class="table table-bordered table-striped bg-white">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Supplier</th>
+            <th>Barang</th>
+            <th>Jumlah</th>
+            <th>Harga Beli</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detail in detail_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ detail.transaksi.tanggal|date:"d M Y" }}</td>
+            <td>{{ detail.transaksi.supplier.nama }}</td>
+            <td>{{ detail.barang.nama }}</td>
+            <td>{{ detail.jumlah }}</td>
+            <td>Rp {{ detail.harga_beli|intcomma }}</td>
+            <td>Rp {{ detail.jumlah|mul:detail.harga_beli|intcomma }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="text-center">Tidak ada data pembelian</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="6" class="text-end">Grand Total</th>
+            <th>Rp {{ total|intcomma }}</th>
+        </tr>
+    </tfoot>
+</table>
+
+<!-- ✅ Tombol Cetak di bawah tabel -->
+<div class="mt-3">
+    <a href="{% url 'cetak_pdf' %}" target="_blank" class="btn btn-danger btn-sm">
+        🖨️ Cetak PDF
+    </a>
+</div>
+{% endblock %}

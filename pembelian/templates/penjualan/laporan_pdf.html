@@ -1,0 +1,49 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; font-size: 12px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid black; padding: 5px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Laporan Pembelian</h2>
+    <p><strong>Dicetak:</strong> {{ now|date:"d-m-Y H:i" }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Supplier</th>
+                <th>Barang</th>
+                <th>Jumlah</th>
+                <th>Harga Beli</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in detail_list %}
+            <tr>
+                <td>{{ p.transaksi.tanggal|date:"d-m-Y" }}</td>
+                <td>{{ p.transaksi.supplier.nama }}</td>
+                <td>{{ p.barang.nama }}</td>
+                <td>{{ p.jumlah }}</td>
+                <td>Rp{{ p.harga_beli|floatformat:0|intcomma }}</td>
+                <td>Rp{{ p.total_harga|floatformat:0|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center;">Tidak ada data</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5"><strong>Total</strong></td>
+                <td><strong>Rp{{ total|floatformat:0|intcomma }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

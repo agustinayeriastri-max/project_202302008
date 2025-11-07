@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laporan Pembelian</title>
+</head>
+<body>
+    <h1>Laporan Pembelian</h1>
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Barang</th>
+                <th>Jumlah</th>
+                <th>Harga Beli</th>
+                <th>Total Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pembelian in pembelian_list %}
+            <tr>
+                <td>{{ pembelian.tanggal }}</td>
+                <td>{{ pembelian.barang.nama }}</td>
+                <td>{{ pembelian.jumlah }}</td>
+                <td>{{ pembelian.harga_beli }}</td>
+                <td>{{ pembelian.total_harga }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Total Harga: </strong>Rp {{ total_harga }}</p>
+</body>
+</html>

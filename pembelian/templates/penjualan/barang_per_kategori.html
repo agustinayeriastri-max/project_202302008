@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Barang Kategori - {{ kategori.nama }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Barang Kategori: <strong>{{ kategori.nama }}</strong></h2>
+
+    {% if barang_list %}
+        <table class="table table-bordered table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th>No</th>
+                    <th>Nama Barang</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Supplier</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for barang in barang_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ barang.nama }}</td>
+                    <td>Rp {{ barang.harga|floatformat:0|intcomma }}</td>
+                    <td>{{ barang.stok }}</td>
+                    <td>{{ barang.supplier.nama }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning">Belum ada barang pada kategori ini.</div>
+    {% endif %}
+</div>
+{% endblock %}

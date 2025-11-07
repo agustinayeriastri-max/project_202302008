@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Transaksi Pembelian Multi-Item</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table, th, td {
+            border: 1px solid #aaa;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        th {
+            background-color: #eee;
+            text-align: center;
+        }
+        input, select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h1, h3 {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Form Transaksi Pembelian Multi-Item</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="id_supplier">Supplier:</label>
+        {{ form_transaksi.supplier }}<br><br>
+
+        <label for="id_tanggal">Tanggal:</label>
+        <input type="date" name="tanggal" id="id_tanggal"><br><br>
+
+        <h3>Detail Barang:</h3>
+        {{ formset.management_form }}
+        <table>
+            <tr>
+                <th>Barang</th>
+                <th>Jumlah</th>
+                <th>Harga Beli</th>
+                <th>Hapus</th>
+            </tr>
+            {% for form in formset %}
+            <tr class="form-row">
+                <td>{{ form.barang }}</td>
+                <td>{{ form.jumlah }}</td>
+                <td>{{ form.harga_beli }}</td>
+                <td style="text-align: center;">{{ form.DELETE }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <button type="submit">Simpan</button>
+    </form>
+
+    <script>
+        // Set tanggal hari ini secara otomatis
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('id_tanggal').value = today;
+
+        // Isi harga beli otomatis saat barang dipilih
+        $(document).ready(function () {
+            $('.form-row').each(function () {
+                const row = $(this);
+                const barangSelect = row.find('select');
+                const hargaField = row.find('input[name$="-harga_beli"]');
+
+                barangSelect.change(function () {
+                    const barangId = $(this).val();
+                    if (barangId) {
+                        $.ajax({
+                            url: "{% url 'get_harga_barang' %}",
+                            data: {
+                                'barang_id': barangId
+                            },
+                            success: function (data) {
+                                hargaField.val(data.harga);
+                            }
+                        });
+                    } else {
+                        hargaField.val('');
+                    }
+                });
+
+                // Trigger untuk load ulang form saat error
+                barangSelect.trigger('change');
+            });
+        });
+    </script>
+
+</body>
+</html>

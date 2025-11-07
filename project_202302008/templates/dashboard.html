@@ -1,0 +1,67 @@
+{% extends 'penjualan/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <img src="{% static 'icons/analytics.png' %}" style="height: 40px;">
+        Dashboard
+    </h1>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Barang</h5>
+                    <p class="card-text display-6">{{ total_barang|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Supplier</h5>
+                    <p class="card-text display-6">{{ total_supplier|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Transaksi</h5>
+                    <p class="card-text display-6">{{ total_transaksi|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-dark shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Pembelian</h5>
+                    <p class="card-text display-6">Rp {{ total_pembelian|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'form_pembelian' %}" class="btn btn-outline-success mb-4">
+        ➕ Tambah Pembelian
+    </a>
+
+    <hr class="my-4">
+
+    <h4 class="mb-3">Barang Hampir Habis (Stok &lt; 10)</h4>
+    <ul class="list-group">
+        {% for barang in barang_menipis %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ barang.nama }}
+                <span class="badge bg-danger rounded-pill">{{ barang.stok }}</span>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Semua stok aman</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
